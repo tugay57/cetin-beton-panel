@@ -1,0 +1,158 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #eef2f7;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+h1 {
+  margin: 0;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.red {
+  color: #dc2626;
+}
+
+.green {
+  color: #16a34a;
+}
+
+.orange {
+  color: #ea580c;
+}table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th {
+  text-align: left;
+  background: #f3f4f6;
+  padding: 14px;
+  color: #374151;
+}
+
+td {
+  padding: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.green-bg {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.red-bg {
+  background: #fee2e2;
+  color: #991b1b;
+}.form-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-top: 15px;
+}
+
+input {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+button {
+  background: #111827;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #1f2937;
+}.small-btn {
+  padding: 7px 10px;
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+.danger {
+  background: #dc2626;
+}
+
+.danger:hover {
+  background: #991b1b;
+}
+#tedarikciAdi {
+  display: block;
+  width: 300px;
+  min-width: 300px;
+}
+
+#tedarikciEkleBtn {
+  width: 180px;
+  min-height: 42px;
+}
+.menu-item {
+  background: #1f2937;
+  padding: 14px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  font-weight: bold;
+  box-shadow: 0 4px 0 #0f172a;
+  transition: all 0.15s ease;
+}
+
+.menu-item:hover {
+  background: #374151;
+  transform: translateY(-2px);
+}
+
+.menu-item:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #0f172a;
+}
+@media print {
+  body {
+    background: white;
+  }
+
+  .menu-item,
+  button {
+    display: none !important;
+  }
+
+  div[style*="width:260px"] {
+    display: none !important;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+  .active-menu {
+  background: #dc2626 !important;
+  color: white !important;
+  border-left: 5px solid #ffffff;
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35) !important;
+}
+}
