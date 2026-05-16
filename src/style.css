@@ -155,4 +155,41 @@ button:hover {
   transform: scale(1.03);
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35) !important;
 }
+@media (max-width: 768px) {
+
+  #app > div {
+    flex-direction: column !important;
+  }
+
+  div[style*="width:260px"] {
+    width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  table {
+    font-size: 12px;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .card {
+    padding: 15px;
+    overflow-x: auto;
+  }
+
+  button {
+    min-height: 45px;
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+}
 }

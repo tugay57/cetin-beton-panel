@@ -9,7 +9,25 @@ import logo from './ctnLogo.png'
 let aktifSayfa = 'dashboard'
 let aramaMetni = ''
 let girisYapildi = localStorage.getItem('girisYapildi') === 'true'
-const PANEL_SIFRE = '1234'
+let aktifKullanici = localStorage.getItem('aktifKullanici') || ''
+
+const KULLANICILAR = [
+  {
+    kullaniciAdi: 'tugay',
+    sifre: '1234',
+    yetki: 'Yönetici'
+  },
+  {
+    kullaniciAdi: 'depo',
+    sifre: '1111',
+    yetki: 'Depo'
+  },
+  {
+    kullaniciAdi: 'muhasebe',
+    sifre: '2222',
+    yetki: 'Muhasebe'
+  }
+]
 let baslangicTarihi = ''
 let bitisTarihi = ''
 
@@ -106,6 +124,15 @@ function menu() {
       >
 
       <div style="margin-top:20px;">
+      <div style="
+  background:#1f2937;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:20px;
+  font-size:13px;
+">
+  Kullanıcı: ${aktifKullanici}
+</div>
 
         <div class="menu-item ${aktifSayfa === 'dashboard' ? 'active-menu' : ''}" onclick="sayfaDegistir('dashboard')">
           📊 Dashboard
@@ -533,6 +560,18 @@ function ekraniCiz() {
         <p style="color:#6b7280;">Giriş yapmak için şifreyi yazın</p>
 
         <input 
+  id="kullaniciInput" 
+  placeholder="Kullanıcı adı"
+  style="
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    box-sizing:border-box;
+  "
+>
+        <input 
           id="sifreInput" 
           type="password" 
           placeholder="Şifre"
@@ -561,15 +600,24 @@ function ekraniCiz() {
   `
 
   document.querySelector('#girisBtn').addEventListener('click', () => {
-    const sifre = document.querySelector('#sifreInput').value
+   const kullaniciAdi = document.querySelector('#kullaniciInput').value.trim()
+const sifre = document.querySelector('#sifreInput').value.trim()
 
-    if (sifre === PANEL_SIFRE) {
-      girisYapildi = true
-      localStorage.setItem('girisYapildi', 'true')
-      ekraniCiz()
-    } else {
-      alert('Şifre yanlış')
-    }
+const kullanici = KULLANICILAR.find(
+  item => item.kullaniciAdi === kullaniciAdi && item.sifre === sifre
+)
+
+if (kullanici) {
+  girisYapildi = true
+  aktifKullanici = kullanici.kullaniciAdi
+
+  localStorage.setItem('girisYapildi', 'true')
+  localStorage.setItem('aktifKullanici', aktifKullanici)
+
+  ekraniCiz()
+} else {
+  alert('Kullanıcı adı veya şifre yanlış')
+}
   })
 
   return
@@ -880,7 +928,11 @@ window.tarihFiltresiUygula = function() {
 }
 window.cikisYap = function() {
   girisYapildi = false
+  aktifKullanici = ''
+
   localStorage.removeItem('girisYapildi')
+  localStorage.removeItem('aktifKullanici')
+
   ekraniCiz()
 }
 verileriYukle()
