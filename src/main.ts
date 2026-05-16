@@ -1,4 +1,10 @@
 import './style.css'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  'https://humkdnxdjrlxejtmvnfx.supabase.co',
+'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1bWtkbnhkanJseGVqdG12bmZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5MTkxOTQsImV4cCI6MjA5NDQ5NTE5NH0.qAOBM7aKKZdwgzvt9MlrQG4JidNJodvZiekpIjfh4tg' 
+)
 import logo from './ctnLogo.png'
 let aktifSayfa = 'dashboard'
 let aramaMetni = ''
@@ -28,13 +34,58 @@ let islemler = JSON.parse(localStorage.getItem('islemler')) || []
 let aracGecmisi = JSON.parse(localStorage.getItem('aracGecmisi')) || {}
 let tedarikciGecmisi = JSON.parse(localStorage.getItem('tedarikciGecmisi')) || {}
 
-function kaydet() {
+async function kaydet() {
+  const data = {
+    stoklar,
+    araclar,
+    tedarikciler,
+    islemler,
+    aracGecmisi,
+    tedarikciGecmisi
+  }
+
   localStorage.setItem('stoklar', JSON.stringify(stoklar))
   localStorage.setItem('araclar', JSON.stringify(araclar))
   localStorage.setItem('tedarikciler', JSON.stringify(tedarikciler))
   localStorage.setItem('islemler', JSON.stringify(islemler))
   localStorage.setItem('aracGecmisi', JSON.stringify(aracGecmisi))
   localStorage.setItem('tedarikciGecmisi', JSON.stringify(tedarikciGecmisi))
+
+  const { error } = await supabase
+    .from('panel_data')
+    .upsert({
+      id: 'ana-veri',
+      data: data,
+      updated_at: new Date().toISOString()
+    })
+
+  if (error) {
+    console.error('Supabase kayıt hatası:', error)
+  }
+}
+
+async function verileriYukle() {
+  const { data, error } = await supabase
+    .from('panel_data')
+    .select('data')
+    .eq('id', 'ana-veri')
+    .single()
+
+  if (error || !data) {
+    console.log('Online veri bulunamadı, mevcut lokal veri kullanılacak.')
+    await kaydet()
+    ekraniCiz()
+    return
+  }
+
+  stoklar = data.data.stoklar || stoklar
+  araclar = data.data.araclar || araclar
+  tedarikciler = data.data.tedarikciler || tedarikciler
+  islemler = data.data.islemler || islemler
+  aracGecmisi = data.data.aracGecmisi || aracGecmisi
+  tedarikciGecmisi = data.data.tedarikciGecmisi || tedarikciGecmisi
+
+  ekraniCiz()
 }
 
 function menu() {
@@ -759,4 +810,4 @@ window.tarihFiltresiUygula = function() {
   bitisTarihi = document.querySelector('#bitisTarihi').value
   ekraniCiz()
 }
-ekraniCiz()
+verileriYukle()
