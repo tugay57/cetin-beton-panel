@@ -145,6 +145,10 @@ function menu() {
         <div class="menu-item ${aktifSayfa === 'araclar' ? 'active-menu' : ''}" onclick="sayfaDegistir('araclar')">
           🚛 Araçlar
         </div>
+        
+        <div class="menu-item ${aktifSayfa === 'arac-listesi' ? 'active-menu' : ''}" onclick="sayfaDegistir('arac-listesi')">
+          📋 Araç Listesi
+        </div>
 
         <div class="menu-item ${aktifSayfa === 'tedarikciler' ? 'active-menu' : ''}" onclick="sayfaDegistir('tedarikciler')">
           🏢 Tedarikçiler
@@ -163,6 +167,22 @@ function menu() {
 }
 
 function dashboardSayfasi() {
+  const bugun = new Date()
+
+const yaklasanMuayeneler = araclar
+  .filter(arac => typeof arac !== 'string' && arac.muayene)
+  .map(arac => {
+    const muayeneTarihi = new Date(arac.muayene)
+    const farkGun = Math.ceil((muayeneTarihi - bugun) / (1000 * 60 * 60 * 24))
+
+    return {
+      ad: arac.ad,
+      muayene: arac.muayene,
+      farkGun: farkGun
+    }
+  })
+  .filter(item => item.farkGun <= 30)
+  .sort((a, b) => a.farkGun - b.farkGun)
   return `
     <h1>Dashboard</h1>
 
@@ -189,7 +209,20 @@ function dashboardSayfasi() {
         <p style="font-size:30px;">${tedarikciler.length}</p>
       </div>
     </div>
+<div class="card" style="margin-top:30px;">
+  <h2>Yaklaşan Muayeneler</h2>
 
+  ${
+    yaklasanMuayeneler.length > 0
+      ? yaklasanMuayeneler.map(item => `
+          <p class="${item.farkGun <= 7 ? 'red' : 'orange'}">
+            ${item.ad} → ${item.farkGun < 0 ? 'Muayene geçmiş' : item.farkGun + ' gün kaldı'}
+            (${item.muayene.split('-').reverse().join('/')})
+          </p>
+        `).join('')
+      : '<p>Yaklaşan muayene yok</p>'
+  }
+</div>
     <div class="card" style="margin-top:30px;">
       <h2>Son İşlemler</h2>
       <table>
@@ -314,15 +347,6 @@ function araclarSayfasi() {
 </div>
 
     <div class="card" style="margin-top:30px;">
-      <h2>Yeni Araç Ekle</h2>
-
-      <div class="form-grid">
-        <input id="aracAdi" placeholder="Plaka - Marka Model - Tip">
-        <button id="aracEkleBtn">Araç Ekle</button>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:30px;">
       <h2>Araç Bazlı Parça Geçmişi</h2>
 
       ${araclar
@@ -402,6 +426,64 @@ function araclarSayfasi() {
   `
 }
 
+function aracListesiSayfasi() {
+  return `
+    <h1>Araç Listesi</h1>
+
+    <div class="card" style="margin-top:20px;">
+      <input 
+        id="aracArama"
+        placeholder="Plaka ara..."
+        style="margin-bottom:20px;"
+      >
+
+      <div class="form-grid" style="margin-bottom:20px;">
+        <input id="yeniAracAdi" placeholder="Plaka - Marka Model - Tip">
+        <input id="yeniAracMuayene" type="date">
+        <button id="aracListeEkleBtn">Araç Ekle</button>
+      </div>
+
+      ${
+        araclar.length > 0
+          ? araclar.map(arac => `
+              <div class="arac-listesi-satir" style="
+  display:flex;
+                justify-content:space-between;
+                align-items:center;
+                padding:12px;
+                margin-bottom:10px;
+                background:#f3f4f6;
+                border-radius:10px;
+              ">
+                <div>
+                  <strong>${typeof arac === 'string' ? arac : arac.ad}</strong>
+                  <br>
+                  <small>
+  Muayene: ${
+    typeof arac === 'string'
+      ? '-'
+      : (
+          arac.muayene
+            ? arac.muayene.split('-').reverse().join('/')
+            : '-'
+        )
+  }
+</small>
+                </div>
+
+                <button 
+                  class="small-btn danger"
+                  onclick="aracSil('${encodeURIComponent(typeof arac === 'string' ? arac : arac.ad)}')"
+                >
+                  Sil
+                </button>
+              </div>
+            `).join('')
+          : '<p>Kayıtlı araç bulunamadı</p>'
+      }
+    </div>
+  `
+}
 function tedarikcilerSayfasi() {
   return `
     <h1>Tedarikçiler</h1>
@@ -532,8 +614,10 @@ function sayfaIcerigi() {
   if (aktifSayfa === 'dashboard') return dashboardSayfasi()
   if (aktifSayfa === 'stok') return stokSayfasi()
   if (aktifSayfa === 'araclar') return araclarSayfasi()
+  if (aktifSayfa === 'arac-listesi') return aracListesiSayfasi()
   if (aktifSayfa === 'tedarikciler') return tedarikcilerSayfasi()
   if (aktifSayfa === 'raporlar') return raporlarSayfasi()
+
   return dashboardSayfasi()
 }
 
@@ -635,8 +719,8 @@ if (kullanici) {
   const urunEkleBtn = document.querySelector('#urunEkleBtn')
   const aramaKutusu = document.querySelector('#aramaKutusu')
   const tedarikciEkleBtn = document.querySelector('#tedarikciEkleBtn')
-  const aracEkleBtn = document.querySelector('#aracEkleBtn')
-
+  const aracListeEkleBtn = document.querySelector('#aracListeEkleBtn')
+  const aracArama = document.querySelector('#aracArama')
   if (aramaKutusu) {
     aramaKutusu.addEventListener('input', (e) => {
       aramaMetni = e.target.value
@@ -654,6 +738,22 @@ if (kullanici) {
       })
     })
   }
+  if (aracArama) {
+  aracArama.addEventListener('input', (e) => {
+    const aranan = e.target.value.toLowerCase()
+    const satirlar = document.querySelectorAll('.arac-listesi-satir')
+
+    satirlar.forEach(satir => {
+      const yazi = satir.innerText.toLowerCase()
+
+      if (yazi.includes(aranan)) {
+        satir.style.display = ''
+      } else {
+        satir.style.display = 'none'
+      }
+    })
+  })
+}
 
   if (urunEkleBtn) {
     urunEkleBtn.addEventListener('click', () => {
@@ -717,30 +817,36 @@ if (kullanici) {
     })
   }
 
-  if (aracEkleBtn) {
-    aracEkleBtn.addEventListener('click', () => {
-      const aracAdi = document.querySelector('#aracAdi').value.trim()
 
-      if (!aracAdi) {
-        alert('Araç bilgisi yazın')
-        return
-      }
+if (aracListeEkleBtn) {
+  aracListeEkleBtn.addEventListener('click', () => {
+    const ad = document.querySelector('#yeniAracAdi').value.trim()
+    const muayene = document.querySelector('#yeniAracMuayene').value
 
-      araclar.push(aracAdi)
+    if (!ad) {
+      alert('Araç bilgisi yazın')
+      return
+    }
 
-      if (!aracGecmisi[aracAdi]) {
-        aracGecmisi[aracAdi] = []
-      }
-
-      kaydet()
-      ekraniCiz()
+    araclar.push({
+      ad: ad,
+      muayene: muayene
     })
-  }
+
+    if (!aracGecmisi[ad]) {
+      aracGecmisi[ad] = []
+    }
+
+    kaydet()
+    ekraniCiz()
+  })
 }
 
 window.sayfaDegistir = function(sayfa) {
   aktifSayfa = sayfa
   ekraniCiz()
+}
+
 }
 
 window.stokGiris = function(index) {
@@ -865,11 +971,17 @@ window.tedarikciSil = function(tedarikciAdi) {
 }
 
 window.aracSil = function(aracAdi) {
-  const onay = confirm(aracAdi + ' aracını silmek istediğinize emin misiniz?')
+  const temizAd = decodeURIComponent(aracAdi)
+
+  const onay = confirm(temizAd + ' aracını silmek istediğinize emin misiniz?')
   if (!onay) return
 
-  araclar = araclar.filter(item => item !== aracAdi)
-  delete aracGecmisi[aracAdi]
+  araclar = araclar.filter(item => {
+    const ad = typeof item === 'string' ? item : item.ad
+    return ad !== temizAd
+  })
+
+  delete aracGecmisi[temizAd]
 
   kaydet()
   ekraniCiz()
@@ -891,6 +1003,14 @@ window.aracGecmisSil = function(aracAdi, tarih) {
   aracGecmisi[aracAdi] = aracGecmisi[aracAdi].filter(
     item => item.tarih !== tarih
   )
+  islemler = islemler.filter(item => {
+  return !(
+    item.tarih === kayit.tarih &&
+    item.urun === kayit.urun &&
+    Number(item.miktar) === Number(kayit.miktar) &&
+    item.detay === aracAdi
+  )
+})
 
   kaydet()
   ekraniCiz()
