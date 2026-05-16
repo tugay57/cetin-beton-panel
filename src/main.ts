@@ -8,6 +8,8 @@ const supabase = createClient(
 import logo from './ctnLogo.png'
 let aktifSayfa = 'dashboard'
 let aramaMetni = ''
+let girisYapildi = localStorage.getItem('girisYapildi') === 'true'
+const PANEL_SIFRE = '1234'
 let baslangicTarihi = ''
 let bitisTarihi = ''
 
@@ -124,6 +126,9 @@ function menu() {
         <div class="menu-item ${aktifSayfa === 'raporlar' ? 'active-menu' : ''}" onclick="sayfaDegistir('raporlar')">
           📈 Raporlar
         </div>
+        <div class="menu-item" onclick="cikisYap()">
+  🚪 Çıkış Yap
+</div>
 
       </div>
     </div>
@@ -506,6 +511,69 @@ function sayfaIcerigi() {
 }
 
 function ekraniCiz() {
+  if (!girisYapildi) {
+  document.querySelector('#app').innerHTML = `
+    <div style="
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#111827;
+      font-family:Arial;
+    ">
+      <div style="
+        background:white;
+        padding:35px;
+        border-radius:20px;
+        width:360px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.25);
+        text-align:center;
+      ">
+        <h2>ÇETİN BETON PANEL</h2>
+        <p style="color:#6b7280;">Giriş yapmak için şifreyi yazın</p>
+
+        <input 
+          id="sifreInput" 
+          type="password" 
+          placeholder="Şifre"
+          style="
+            width:100%;
+            padding:12px;
+            margin-top:15px;
+            border:1px solid #d1d5db;
+            border-radius:10px;
+            box-sizing:border-box;
+          "
+        >
+
+        <button 
+          id="girisBtn"
+          style="
+            width:100%;
+            padding:12px;
+            margin-top:15px;
+          "
+        >
+          Giriş Yap
+        </button>
+      </div>
+    </div>
+  `
+
+  document.querySelector('#girisBtn').addEventListener('click', () => {
+    const sifre = document.querySelector('#sifreInput').value
+
+    if (sifre === PANEL_SIFRE) {
+      girisYapildi = true
+      localStorage.setItem('girisYapildi', 'true')
+      ekraniCiz()
+    } else {
+      alert('Şifre yanlış')
+    }
+  })
+
+  return
+}
   document.querySelector('#app').innerHTML = `
     <div style="display:flex; min-height:100vh;">
       ${menu()}
@@ -808,6 +876,11 @@ window.tedarikciGecmisSil = function(tedarikciAdi, tarih) {
 window.tarihFiltresiUygula = function() {
   baslangicTarihi = document.querySelector('#baslangicTarihi').value
   bitisTarihi = document.querySelector('#bitisTarihi').value
+  ekraniCiz()
+}
+window.cikisYap = function() {
+  girisYapildi = false
+  localStorage.removeItem('girisYapildi')
   ekraniCiz()
 }
 verileriYukle()
