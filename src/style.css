@@ -199,4 +199,34 @@ button:hover {
   div[style*="width:260px"] {
     width: 100% !important;
   }
+  @media (max-width: 768px) {
+  #anaLayout {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  #anaLayout > div:first-child {
+    width: 100% !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+  }
+
+  #anaLayout > div:last-child {
+    width: 100% !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+  }
+
+  .menu-item {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 18px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
 }
