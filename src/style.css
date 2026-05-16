@@ -29,7 +29,9 @@ h1 {
 
 .orange {
   color: #ea580c;
-}table {
+}
+
+table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
@@ -62,7 +64,9 @@ td {
 .red-bg {
   background: #fee2e2;
   color: #991b1b;
-}.form-grid {
+}
+
+.form-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 12px;
@@ -87,7 +91,9 @@ button {
 
 button:hover {
   background: #1f2937;
-}.small-btn {
+}
+
+.small-btn {
   padding: 7px 10px;
   margin-right: 5px;
   font-size: 12px;
@@ -100,6 +106,7 @@ button:hover {
 .danger:hover {
   background: #991b1b;
 }
+
 #tedarikciAdi {
   display: block;
   width: 300px;
@@ -110,6 +117,7 @@ button:hover {
   width: 180px;
   min-height: 42px;
 }
+
 .menu-item {
   background: #1f2937;
   padding: 14px 16px;
@@ -130,6 +138,75 @@ button:hover {
   transform: translateY(2px);
   box-shadow: 0 2px 0 #0f172a;
 }
+
+div.active-menu {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-left: 6px solid #ffffff !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.45) !important;
+}
+
+/* MOBİL GÖRÜNÜM */
+@media screen and (max-width: 768px) {
+  html, body {
+    width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  #anaLayout {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  #anaLayout > div:first-child {
+    width: 100% !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+  }
+
+  #anaLayout > div:last-child {
+    width: 100% !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .menu-item {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 18px !important;
+    padding: 14px !important;
+  }
+
+  .card {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 15px !important;
+    overflow-x: auto !important;
+  }
+
+  input {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  button {
+    min-height: 45px;
+  }
+
+  table {
+    display: block !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    font-size: 12px;
+  }
+}
+
+/* PDF / YAZDIRMA */
 @media print {
   body {
     background: white;
@@ -148,85 +225,4 @@ button:hover {
     box-shadow: none;
     border: 1px solid #ddd;
   }
-  .active-menu {
-  background: #dc2626 !important;
-  color: white !important;
-  border-left: 5px solid #ffffff;
-  transform: scale(1.03);
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35) !important;
-}
-@media (max-width: 768px) {
-
-  #app > div {
-    flex-direction: column !important;
-  }
-
-  div[style*="width:260px"] {
-    width: 100% !important;
-    box-sizing: border-box;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr !important;
-  }
-
-  table {
-    font-size: 12px;
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .card {
-    padding: 15px;
-    overflow-x: auto;
-  }
-
-  button {
-    min-height: 45px;
-  }
-
-  input {
-    width: 100%;
-    box-sizing: border-box;
-  }
-@media (max-width: 768px) {
-
-  #anaLayout {
-    flex-direction: column !important;
-  }
-
-  div[style*="width:260px"] {
-    width: 100% !important;
-  }
-  @media (max-width: 768px) {
-  #anaLayout {
-    display: block !important;
-    width: 100% !important;
-  }
-
-  #anaLayout > div:first-child {
-    width: 100% !important;
-    padding: 15px !important;
-    box-sizing: border-box !important;
-  }
-
-  #anaLayout > div:last-child {
-    width: 100% !important;
-    padding: 15px !important;
-    box-sizing: border-box !important;
-  }
-
-  .menu-item {
-    width: 100% !important;
-    box-sizing: border-box !important;
-    font-size: 18px !important;
-    margin-bottom: 10px !important;
-  }
-
-  .card {
-    width: 100% !important;
-    box-sizing: border-box !important;
-  }
-}
 }
