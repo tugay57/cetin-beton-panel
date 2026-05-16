@@ -190,6 +190,13 @@ button:hover {
     width: 100%;
     box-sizing: border-box;
   }
+@media (max-width: 768px) {
 
-}
+  #anaLayout {
+    flex-direction: column !important;
+  }
+
+  div[style*="width:260px"] {
+    width: 100% !important;
+  }
 }

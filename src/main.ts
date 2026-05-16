@@ -623,7 +623,7 @@ if (kullanici) {
   return
 }
   document.querySelector('#app').innerHTML = `
-    <div style="display:flex; min-height:100vh;">
+    <div id="anaLayout" style="display:flex; min-height:100vh;">
       ${menu()}
 
       <div style="flex:1; padding:30px; background:#eef2f7;">
